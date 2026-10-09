@@ -1,21 +1,59 @@
-import json
-from pathlib import Path
 from fastapi import APIRouter, HTTPException
+from src.services.s3_service import get_cell_data
 
 router = APIRouter()
-
-MOCK_FILE_PATH = Path("contract/mock_cells.geojson")
 
 @router.get("/cells")
 def get_cells():
     """
-    Serves the mock GeoJSON file for the frontend to build against tonight.
-    Later, this will load the real cells.geojson from S3[cite: 4].
+    Returns the full GeoJSON FeatureCollection.
+    Data is served instantly from memory (loaded on startup from S3 or mock).
     """
-    if not MOCK_FILE_PATH.exists():
-        raise HTTPException(status_code=404, detail="Mock data file not found.")
+    return get_cell_data()
+
+@router.get("/cells/{h3}")
+def get_cell_by_h3(h3: str):
+    """
+    Returns a single cell by its H3 index.
+    """
+    data = get_cell_data()
+    for feature in data.get("features", []):
+        if feature.get("properties", {}).get("h3") == h3:
+            return feature
+            
+    raise HTTPException(status_code=404, detail=f"Cell with H3 {h3} not found")
+
+@router.get("/wards")
+def get_ward_summaries():
+    """
+    Returns aggregated summaries (population, average priority) for each ward.
+    """
+    data = get_cell_data()
+    wards = {}
     
-    with open(MOCK_FILE_PATH, "r") as f:
-        data = json.load(f)
+    for feature in data.get("features", []):
+        props = feature.get("properties", {})
+        ward_name = props.get("ward", "Unknown")
         
-    return data
+        if ward_name not in wards:
+            wards[ward_name] = {
+                "ward": ward_name,
+                "cell_count": 0,
+                "total_population": 0,
+                "avg_priority": 0.0,
+                "_priority_sum": 0.0
+            }
+            
+        wards[ward_name]["cell_count"] += 1
+        wards[ward_name]["total_population"] += props.get("population", 0)
+        wards[ward_name]["_priority_sum"] += props.get("priority", 0.0)
+        
+    # Calculate final averages and clean up
+    result = []
+    for w_data in wards.values():
+        if w_data["cell_count"] > 0:
+            w_data["avg_priority"] = round(w_data["_priority_sum"] / w_data["cell_count"], 4)
+        del w_data["_priority_sum"]
+        result.append(w_data)
+        
+    return result
