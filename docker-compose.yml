@@ -1,0 +1,33 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    environment:
+      S3_BUCKET: ${S3_BUCKET:-}
+      S3_CELLS_KEY: ${S3_CELLS_KEY:-features/cells.geojson}
+      AWS_REGION: ${AWS_REGION:-ap-south-1}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-chhaya}
+      POSTGRES_DB: ${POSTGRES_DB:-chhaya_db}
+      POSTGRES_SERVER: db
+      POSTGRES_PORT: 5432
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-chhaya}@db:5432/${POSTGRES_DB:-chhaya_db}
+    depends_on:
+      - db
+
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-chhaya}
+      POSTGRES_DB: ${POSTGRES_DB:-chhaya_db}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
