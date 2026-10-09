@@ -1,0 +1,87 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                    [
+                        [
+                            77.200,
+                            28.600
+                        ],
+                        [
+                            77.210,
+                            28.600
+                        ],
+                        [
+                            77.210,
+                            28.610
+                        ],
+                        [
+                            77.200,
+                            28.610
+                        ],
+                        [
+                            77.200,
+                            28.600
+                        ]
+                    ]
+                ]
+            },
+            "properties": {
+                "h3": "883da104e9fffff",
+                "ndvi": 0.25,
+                "lst_c": 38.5,
+                "population": 1200,
+                "built_frac": 0.8,
+                "dust_idx": 0.6,
+                "school_count": 2,
+                "ward": "Connaught Place",
+                "priority": 0.85
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                    [
+                        [
+                            77.100,
+                            28.500
+                        ],
+                        [
+                            77.110,
+                            28.500
+                        ],
+                        [
+                            77.110,
+                            28.510
+                        ],
+                        [
+                            77.100,
+                            28.510
+                        ],
+                        [
+                            77.100,
+                            28.500
+                        ]
+                    ]
+                ]
+            },
+            "properties": {
+                "h3": "883da104e1fffff",
+                "ndvi": 0.45,
+                "lst_c": 35.2,
+                "population": 800,
+                "built_frac": 0.4,
+                "dust_idx": 0.3,
+                "school_count": 1,
+                "ward": "Hauz Khas",
+                "priority": 0.45
+            }
+        }
+    ]
+}
