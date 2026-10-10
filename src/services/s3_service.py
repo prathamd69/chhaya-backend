@@ -28,7 +28,10 @@ def _install(data, etag, source):
     _snapshot = {
         "data": data,
         "body": json.dumps(data).encode("utf-8"),
-        "by_h3": {f["properties"]["h3"]: f for f in data["features"]},
+        "by_h3": {
+            (f["properties"].get("h3") or f["properties"].get("h3_index")): f
+            for f in data["features"]
+        },
         "etag": etag,
         "source": source,
         "loaded_at": time.time(),
