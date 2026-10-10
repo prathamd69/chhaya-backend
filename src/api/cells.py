@@ -1,5 +1,9 @@
 from fastapi import APIRouter, HTTPException
+
+from src.core.logger import configLogger
 from src.services.s3_service import get_cell_data
+
+logger = configLogger(__file__)
 
 router = APIRouter()
 
@@ -20,7 +24,8 @@ def get_cell_by_h3(h3: str):
     for feature in data.get("features", []):
         if feature.get("properties", {}).get("h3") == h3:
             return feature
-            
+
+    logger.warning("Cell not found", extra={"h3": h3})
     raise HTTPException(status_code=404, detail=f"Cell with H3 {h3} not found")
 
 @router.get("/wards")
