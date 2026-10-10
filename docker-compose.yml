@@ -9,7 +9,7 @@ services:
     build: .
     restart: unless-stopped
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
     env_file: .env
     environment:
       POSTGRES_SERVER: db
@@ -28,5 +28,23 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./site:/srv:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    logging: *default-logging
+    depends_on:
+      - api
+
 volumes:
   pgdata:
+  caddy_data:
+  caddy_config:

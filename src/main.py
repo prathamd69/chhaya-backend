@@ -26,7 +26,8 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title=settings.PROJECT_NAME,
     description="Backend API for Delhi Climate Planning Engine",
-    lifespan=lifespan
+    lifespan=lifespan,
+    root_path=settings.ROOT_PATH,
 )
 
 app.add_middleware(GZipMiddleware, minimum_size=1000)

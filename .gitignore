@@ -224,3 +224,4 @@ logs/
 .env.*
 !.env.example
 *.pem
+site/
