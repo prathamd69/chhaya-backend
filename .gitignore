@@ -225,3 +225,6 @@ logs/
 !.env.example
 *.pem
 site/
+node_modules
+dist
+.git
